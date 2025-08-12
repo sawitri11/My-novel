@@ -1,47 +1,124 @@
 <!DOCTYPE html>
-<html>
+<html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <title>Novel Writer</title>
-  <style>
-    body { font-family: 'Sarabun', sans-serif; padding: 2em; background: #f9f9f9; }
-    textarea { width: 100%; height: 400px; font-size: 1.1em; }
-    .toolbar { margin-bottom: 1em; }
-    #saveStatus { color: green; margin-top: 5px;}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Novel Writer Assistant</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-  <h2>เขียนนิยาย/เรื่องสั้น</h2>
-  <div class="toolbar">
-    <button onclick="saveDraft()">💾 บันทึก</button>
-    <button onclick="loadDraft()">🔄 โหลดล่าสุด</button>
-    <button onclick="download()">⬇️ ดาวน์โหลดเป็นไฟล์</button>
-  </div>
-  <textarea id="editor" placeholder="พิมพ์เนื้อหาได้เลย..."></textarea>
-  <div id="saveStatus"></div>
-  <script>
-    function saveDraft() {
-      localStorage.setItem('my_novel_draft', document.getElementById('editor').value);
-      document.getElementById('saveStatus').innerText = "บันทึกสำเร็จ!";
-      setTimeout(() => document.getElementById('saveStatus').innerText = "", 2000);
-    }
-    function loadDraft() {
-      document.getElementById('editor').value = localStorage.getItem('my_novel_draft') || "";
-      document.getElementById('saveStatus').innerText = "โหลดล่าสุดแล้ว!";
-      setTimeout(() => document.getElementById('saveStatus').innerText = "", 2000);
-    }
-    function download() {
-      const text = document.getElementById('editor').value;
-      const blob = new Blob([text], {type: "text/plain"});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = "my_novel.txt";
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-    // โหลดอัตโนมัติเมื่อเปิดหน้า
-    window.onload = loadDraft;
-  </script>
+    <!-- Overlay สำหรับปิด Sidebar -->
+    <div class="overlay" id="overlay"></div>
+    
+    <!-- Sidebar Off-canvas -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>โมดูล</h2>
+            <button class="close-sidebar" id="closeSidebar">❌</button>
+        </div>
+        
+        <nav class="sidebar-nav" id="sidebar-nav">
+            <!-- Home Module -->
+            <div class="nav-section home-section">
+                <button class="nav-item home-item" data-module="write">
+                    <span class="icon">📝</span>
+                    ห้องเขียน
+                    <span class="save-indicator" id="saveIndicator">●</span>
+                </button>
+            </div>
+            
+            <!-- Main Modules Group -->
+            <div class="nav-section menu-group">
+                <h3>⬟ โมดูลหลัก</h3>
+                <button class="nav-item" data-module="characters">
+                    <span class="icon">👥</span>
+                    ตัวละคร
+                </button>
+                <button class="nav-item" data-module="world">
+                    <span class="icon">🌍</span>
+                    โลก
+                </button>
+                <button class="nav-item" data-module="chapters">
+                    <span class="icon">📚</span>
+                    จัดการบท
+                </button>
+                <button class="nav-item" data-module="story-structure">
+                    <span class="icon">🏗️</span>
+                    โครงสร้างเรื่อง
+                </button>
+                <button class="nav-item" data-module="analytics">
+                    <span class="icon">📈</span>
+                    วิเคราะห์เรื่อง
+                </button>
+                <button class="nav-item" data-module="generator">
+                    <span class="icon">🎲</span>
+                    เครื่องมือสร้าง
+                </button>
+                <button class="nav-item" data-module="research">
+                    <span class="icon">📚</span>
+                    คลังวิจัย
+                </button>
+            </div>
+            
+            <!-- Data Tools Group -->
+            <div class="nav-section menu-group">
+                <h3>💾 เครื่องมือข้อมูล</h3>
+                <button class="nav-item" data-module="manualBackup">
+                    <span class="icon">💾</span>
+                    สำรองข้อมูล
+                </button>
+                <button class="nav-item" data-module="restoreFromFile">
+                    <span class="icon">🔄</span>
+                    กู้คืนจากไฟล์
+                </button>
+                <button class="nav-item" data-module="checkDataIntegrity">
+                    <span class="icon">🔍</span>
+                    ตรวจสอบข้อมูล
+                </button>
+            </div>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="footer-controls">
+                <button class="footer-btn" id="darkModeToggle">
+                    <span class="icon">📍</span>
+                    โทนจีน
+                </button>
+                <button class="footer-btn mobile-close" id="mobileCloseSidebar">
+                    <span class="icon">❌</span>
+                    ปิด
+                </button>
+            </div>
+            <div class="storage-info">
+                <small>📊 ข้อมูล: <span id="storageUsed">0</span> KB</small>
+            </div>
+        </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <button class="menu-toggle" id="menuToggle">☰</button>
+            <h1 id="currentModuleTitle">⬟ Novel Writer Assistant</h1>
+            <div class="header-actions">
+                <button class="btn-settings" id="settingsBtn" title="การตั้งค่า">⚙️</button>
+            </div>
+        </header>
+        
+        <!-- Workspace -->
+        <div class="workspace" id="workspace">
+            <!-- เนื้อหาจะถูกโหลดที่นี่ -->
+        </div>
+    </main>
+    
+    <!-- Load Modules First -->
+    <script src="modules/performanceManager.js"></script>
+    <script src="modules/writeModule.js"></script>
+    <script src="modules/characterModule.js"></script>
+    <script src="modules/worldModule.js"></script>
+    
+    <!-- Load Main App -->
+    <script src="script.js"></script>
 </body>
 </html>

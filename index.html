@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Novel Writer</title>
+  <style>
+    body { font-family: 'Sarabun', sans-serif; padding: 2em; background: #f9f9f9; }
+    textarea { width: 100%; height: 400px; font-size: 1.1em; }
+    .toolbar { margin-bottom: 1em; }
+    #saveStatus { color: green; margin-top: 5px;}
+  </style>
+</head>
+<body>
+  <h2>เขียนนิยาย/เรื่องสั้น</h2>
+  <div class="toolbar">
+    <button onclick="saveDraft()">💾 บันทึก</button>
+    <button onclick="loadDraft()">🔄 โหลดล่าสุด</button>
+    <button onclick="download()">⬇️ ดาวน์โหลดเป็นไฟล์</button>
+  </div>
+  <textarea id="editor" placeholder="พิมพ์เนื้อหาได้เลย..."></textarea>
+  <div id="saveStatus"></div>
+  <script>
+    function saveDraft() {
+      localStorage.setItem('my_novel_draft', document.getElementById('editor').value);
+      document.getElementById('saveStatus').innerText = "บันทึกสำเร็จ!";
+      setTimeout(() => document.getElementById('saveStatus').innerText = "", 2000);
+    }
+    function loadDraft() {
+      document.getElementById('editor').value = localStorage.getItem('my_novel_draft') || "";
+      document.getElementById('saveStatus').innerText = "โหลดล่าสุดแล้ว!";
+      setTimeout(() => document.getElementById('saveStatus').innerText = "", 2000);
+    }
+    function download() {
+      const text = document.getElementById('editor').value;
+      const blob = new Blob([text], {type: "text/plain"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = "my_novel.txt";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+    // โหลดอัตโนมัติเมื่อเปิดหน้า
+    window.onload = loadDraft;
+  </script>
+</body>
+</html>

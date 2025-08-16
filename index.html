@@ -1,124 +1,155 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Novel Writer Assistant</title>
-    <link href="style.css" rel="stylesheet" type="text/css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>คัมภีร์หมื่นอักษร - The Jade Scroll</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Overlay สำหรับปิด Sidebar -->
-    <div class="overlay" id="overlay"></div>
+  <div class="app-container">
+    <!-- Hamburger Menu Button -->
+    <button class="menu-toggle" id="menuToggle">
+      <i class="fas fa-bars"></i>
+    </button>
+
     
-    <!-- Sidebar Off-canvas -->
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h2>โมดูล</h2>
-            <button class="close-sidebar" id="closeSidebar">❌</button>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h2><i class="fas fa-scroll"></i> คัมภีร์หมื่นอักษร</h2>
+        <button class="sidebar-close" id="sidebarToggle">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="sidebar-menu">
+        <div class="module-item active" data-module="writing">
+          <i class="fas fa-feather-alt"></i>
+          <span>ห้องเขียน</span>
+        </div>
+        <div class="module-item" data-module="chapters">
+          <i class="fas fa-book-open"></i>
+          <span>คลังบท</span>
+        </div>
+        <div class="module-item" data-module="characters">
+          <i class="fas fa-users"></i>
+          <span>ตัวละคร</span>
+        </div>
+        <div class="module-item" data-module="world">
+          <i class="fas fa-globe"></i>
+          <span>โลก</span>
+        </div>
+        <div class="module-item" data-module="structure">
+          <i class="fas fa-sitemap"></i>
+          <span>โครงเรื่อง</span>
+        </div>
+        <div class="module-item" data-module="research">
+          <i class="fas fa-search"></i>
+          <span>วิจัย</span>
+        </div>
+        <div class="module-item" data-module="archive">
+          <i class="fas fa-archive"></i>
+          <span>ห้องสมุด</span>
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="status-indicator offline" id="statusIndicator">
+          <i class="fas fa-circle"></i>
+          <span>ออฟไลน์</span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Main Content Area -->
+    <div class="main-content" id="mainContent">
+      <!-- Writing Module (Default) -->
+      <div class="content-panel active" id="writing-panel">
+        <div class="panel-header">
+          <h3><i class="fas fa-feather-alt"></i> ห้องเขียน</h3>
+          <div class="save-status" id="saveStatus">พร้อมเขียน</div>
+          <i class="fas fa-circle" id="saveIcon"></i>
+          <button class="ai-icon-btn" id="aiAnalyzeBtn" title="วิเคราะห์ด้วย AI">
+            <i class="fas fa-brain"></i>
+          </button>
         </div>
         
-        <nav class="sidebar-nav" id="sidebar-nav">
-            <!-- Home Module -->
-            <div class="nav-section home-section">
-                <button class="nav-item home-item" data-module="write">
-                    <span class="icon">📝</span>
-                    ห้องเขียน
-                    <span class="save-indicator" id="saveIndicator">●</span>
-                </button>
-            </div>
-            
-            <!-- Main Modules Group -->
-            <div class="nav-section menu-group">
-                <h3>⬟ โมดูลหลัก</h3>
-                <button class="nav-item" data-module="characters">
-                    <span class="icon">👥</span>
-                    ตัวละคร
-                </button>
-                <button class="nav-item" data-module="world">
-                    <span class="icon">🌍</span>
-                    โลก
-                </button>
-                <button class="nav-item" data-module="chapters">
-                    <span class="icon">📚</span>
-                    จัดการบท
-                </button>
-                <button class="nav-item" data-module="story-structure">
-                    <span class="icon">🏗️</span>
-                    โครงสร้างเรื่อง
-                </button>
-                <button class="nav-item" data-module="analytics">
-                    <span class="icon">📈</span>
-                    วิเคราะห์เรื่อง
-                </button>
-                <button class="nav-item" data-module="generator">
-                    <span class="icon">🎲</span>
-                    เครื่องมือสร้าง
-                </button>
-                <button class="nav-item" data-module="research">
-                    <span class="icon">📚</span>
-                    คลังวิจัย
-                </button>
-            </div>
-            
-            <!-- Data Tools Group -->
-            <div class="nav-section menu-group">
-                <h3>💾 เครื่องมือข้อมูล</h3>
-                <button class="nav-item" data-module="manualBackup">
-                    <span class="icon">💾</span>
-                    สำรองข้อมูล
-                </button>
-                <button class="nav-item" data-module="restoreFromFile">
-                    <span class="icon">🔄</span>
-                    กู้คืนจากไฟล์
-                </button>
-                <button class="nav-item" data-module="checkDataIntegrity">
-                    <span class="icon">🔍</span>
-                    ตรวจสอบข้อมูล
-                </button>
-            </div>
-        </nav>
         
-        <div class="sidebar-footer">
-            <div class="footer-controls">
-                <button class="footer-btn" id="darkModeToggle">
-                    <span class="icon">📍</span>
-                    โทนจีน
-                </button>
-                <button class="footer-btn mobile-close" id="mobileCloseSidebar">
-                    <span class="icon">❌</span>
-                    ปิด
-                </button>
-            </div>
-            <div class="storage-info">
-                <small>📊 ข้อมูล: <span id="storageUsed">0</span> KB</small>
-            </div>
+        <div class="writing-area" id="writingArea">
+          <textarea class="writing-editor" id="writingEditor" placeholder="เริ่มเขียนเรื่องราวของคุณที่นี่..."></textarea>
         </div>
-    </aside>
-    
-    <!-- Main Content -->
-    <main class="main-content">
-        <!-- Header -->
-        <header class="header">
-            <button class="menu-toggle" id="menuToggle">☰</button>
-            <h1 id="currentModuleTitle">⬟ Novel Writer Assistant</h1>
-            <div class="header-actions">
-                <button class="btn-settings" id="settingsBtn" title="การตั้งค่า">⚙️</button>
-            </div>
-        </header>
-        
-        <!-- Workspace -->
-        <div class="workspace" id="workspace">
-            <!-- เนื้อหาจะถูกโหลดที่นี่ -->
+      </div>
+
+      <!-- Chapters Module -->
+      <div class="content-panel" id="chapters-panel">
+        <div class="panel-header">
+          <h3><i class="fas fa-book-open"></i> คลังบท</h3>
         </div>
-    </main>
-    
-    <!-- Load Modules First -->
-    <script src="modules/performanceManager.js"></script>
-    <script src="modules/writeModule.js"></script>
-    <script src="modules/characterModule.js"></script>
-    <script src="modules/worldModule.js"></script>
-    
-    <!-- Load Main App -->
-    <script src="script.js"></script>
+        <div class="chapters-grid" id="chaptersGrid">
+        </div>
+      </div>
+
+      <!-- Characters Module -->
+      <div class="content-panel" id="characters-panel">
+        <div class="panel-header">
+          <h3><i class="fas fa-users"></i> ตัวละคร</h3>
+        </div>
+        <div class="characters-grid" id="charactersGrid">
+        </div>
+      </div>
+
+      <!-- World Module -->
+      <div class="content-panel" id="world-panel">
+        <div class="panel-header">
+          <h3><i class="fas fa-globe"></i> โลก</h3>
+        </div>
+        <div class="world-grid" id="worldGrid">
+        </div>
+      </div>
+
+      <!-- Structure Module -->
+      <div class="content-panel" id="structure-panel">
+        <div class="panel-header">
+          <h3><i class="fas fa-sitemap"></i> โครงเรื่อง</h3>
+        </div>
+        <div class="structure-container">
+        </div>
+      </div>
+
+      <!-- Research Module -->
+      <div class="content-panel" id="research-panel">
+        <div class="panel-header">
+          <h3><i class="fas fa-search"></i> วิจัย</h3>
+        </div>
+        <div class="research-grid" id="researchGrid">
+        </div>
+      </div>
+
+      <!-- Archive Module -->
+      <div class="content-panel" id="archive-panel">
+        <div class="panel-header">
+          <h3><i class="fas fa-archive"></i> ห้องสมุด</h3>
+        </div>
+        <div class="archive-grid">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Indicator -->
+  <div class="loading-indicator" id="loadingIndicator" style="display: none;">
+    <i class="fas fa-spinner fa-spin"></i>
+    <span>กำลังประมวลผลด้วย AI...</span>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>

@@ -3,9 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100vw; height: 100vh; overflow: hidden; position: fixed; top: 0; left: 0; }
+    body { touch-action: none; overscroll-behavior: none; }
+  </style>
   <title>คัมภีร์หมื่นอักษร - The Jade Scroll</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-  <link href="style.css" rel="stylesheet">
+  
+  <!-- CSS Modules -->
+  <link href="src/styles/base.css" rel="stylesheet">
+  <link href="src/styles/character.css" rel="stylesheet">
+  <link href="src/styles/writing.css" rel="stylesheet">
+  <link href="src/styles/chapters.css" rel="stylesheet">
+  <link href="src/styles/chapter-preview.css" rel="stylesheet">
+  <link href="src/styles/world.css" rel="stylesheet">
 </head>
 <body>
   <div class="app-container">
@@ -71,18 +83,34 @@
     <div class="main-content" id="mainContent">
       <!-- Writing Module (Default) -->
       <div class="content-panel active" id="writing-panel">
+        <!-- Chapter Cards Trigger -->
+        <button class="chapter-cards-trigger" id="chapterCardsTrigger">
+          <i class="fas fa-clipboard-list"></i>
+        </button>
+
+        <!-- Chapter Info Cards Overlay -->
+        <div class="chapter-cards-overlay" id="chapterCardsOverlay">
+          <div class="chapter-info-cards" id="chapterInfoCards">
+            <!-- Chapter cards will be generated here -->
+          </div>
+        </div>
+
         <div class="panel-header">
           <h3><i class="fas fa-feather-alt"></i> ห้องเขียน</h3>
-          <div class="save-status" id="saveStatus">พร้อมเขียน</div>
-          <i class="fas fa-circle" id="saveIcon"></i>
+          <div class="save-status-inline" id="saveStatusInline">
+            <span id="saveStatusText">
+              <span class="status-dot">🟢</span>พร้อมเขียน
+            </span>
+          </div>
           <button class="ai-icon-btn" id="aiAnalyzeBtn" title="วิเคราะห์ด้วย AI">
             <i class="fas fa-brain"></i>
           </button>
         </div>
         
-        
         <div class="writing-area" id="writingArea">
-          <textarea class="writing-editor" id="writingEditor" placeholder="เริ่มเขียนเรื่องราวของคุณที่นี่..."></textarea>
+          <div class="infinite-paper-container">
+            <textarea class="writing-editor" id="writingEditor" placeholder="เริ่มเขียนเรื่องราวของคุณที่นี่..."></textarea>
+          </div>
         </div>
       </div>
 
@@ -92,6 +120,25 @@
           <h3><i class="fas fa-book-open"></i> คลังบท</h3>
         </div>
         <div class="chapters-grid" id="chaptersGrid">
+          <!-- Chapter Card Template -->
+          <div class="chapter-card template">
+            <input type="text" class="chapter-title" placeholder="ชื่อบท">
+            <textarea class="chapter-summary" placeholder="สรุปเนื้อหาบท"></textarea>
+            <div class="chapter-meta">
+              <div class="chapter-stats">
+                <span><i class="fas fa-clock"></i> สร้างเมื่อ: วันนี้</span>
+                <span><i class="fas fa-edit"></i> แก้ไขล่าสุด: เมื่อกี้</span>
+              </div>
+              <div class="chapter-actions">
+                <button class="btn-edit">
+                  <i class="fas fa-edit"></i> แก้ไข
+                </button>
+                <button class="btn-delete">
+                  <i class="fas fa-trash"></i> ลบ
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -110,6 +157,14 @@
           <h3><i class="fas fa-globe"></i> โลก</h3>
         </div>
         <div class="world-grid" id="worldGrid">
+          <!-- Location Card Template -->
+          <div class="location-card template">
+            <input type="text" class="location-name" placeholder="ชื่อสถานที่">
+            <textarea class="location-description" placeholder="คำอธิบายสถานที่"></textarea>
+            <button class="btn-delete">
+              <i class="fas fa-trash"></i> ลบ
+            </button>
+          </div>
         </div>
       </div>
 
@@ -119,6 +174,7 @@
           <h3><i class="fas fa-sitemap"></i> โครงเรื่อง</h3>
         </div>
         <div class="structure-container">
+          <!-- Structure content will be added via CSS/JS modules -->
         </div>
       </div>
 
@@ -128,6 +184,15 @@
           <h3><i class="fas fa-search"></i> วิจัย</h3>
         </div>
         <div class="research-grid" id="researchGrid">
+          <!-- Research Card Template -->
+          <div class="research-card template">
+            <input type="text" class="research-title" placeholder="หัวข้อการวิจัย">
+            <textarea class="research-content" placeholder="เนื้อหาการวิจัย"></textarea>
+            <input type="text" class="research-source" placeholder="แหล่งที่มา">
+            <button class="btn-delete">
+              <i class="fas fa-trash"></i> ลบ
+            </button>
+          </div>
         </div>
       </div>
 
@@ -137,6 +202,11 @@
           <h3><i class="fas fa-archive"></i> ห้องสมุด</h3>
         </div>
         <div class="archive-grid">
+          <div class="archive-item">
+            <i class="fas fa-box-open"></i>
+            <h3>ห้องสมุดยังว่างเปล่า</h3>
+            <p>เนื้อหาที่เก็บถาวรจะปรากฏที่นี่</p>
+          </div>
         </div>
       </div>
     </div>
@@ -148,8 +218,17 @@
     <span>กำลังประมวลผลด้วย AI...</span>
   </div>
 
+  <!-- Firebase Scripts -->
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
-  <script src="script.js"></script>
+  
+  <!-- JavaScript Modules -->
+  <script src="src/utils/utils.js"></script>
+  <script src="src/utils/firebase-manager.js"></script>
+  <script src="src/utils/undo-redo.js"></script>
+  <script src="src/modules/characters/character.js"></script>
+  <script src="src/modules/writing/writing.js"></script>
+  <script src="src/modules/chapters/chapter-preview.js"></script>
+  <script src="src/core/app.js"></script>
 </body>
 </html>
